@@ -94,12 +94,12 @@ async function generateFullReference(document: vscode.TextDocument, position: vs
     const symbolPath = findSymbolHierarchy(symbols, position);
     
     if (symbolPath.length === 0) {
-        // Try to find any symbol that matches the word at cursor
-        const matchingSymbol = findSymbolByName(symbols, word);
-        if (matchingSymbol) {
-            return buildCompleteReference(document, [matchingSymbol]);
+        // Try to find any symbol path that matches the word at cursor (preserves parents like classes)
+        const matchingPath = findSymbolPathByName(symbols, word);
+        if (matchingPath) {
+            return buildCompleteReference(document, matchingPath);
         }
-        
+
         // Final fallback: just the word with namespace
         return buildFallbackReference(document, word);
     }
@@ -170,12 +170,34 @@ function findSymbolByName(symbols: vscode.DocumentSymbol[], name: string): vscod
         if (symbol.name === name) {
             return symbol;
         }
-        
+
         // Search children recursively
         if (symbol.children && symbol.children.length > 0) {
             const childMatch = findSymbolByName(symbol.children, name);
             if (childMatch) {
                 return childMatch;
+            }
+        }
+    }
+    return null;
+}
+
+/**
+ * Finds the path (outermost → innermost) to the first symbol matching `name`.
+ * @param symbols - Array of document symbols
+ * @param name - The symbol name to find
+ * @returns Array of symbols from outermost to the matching symbol, or null
+ */
+function findSymbolPathByName(symbols: vscode.DocumentSymbol[], name: string): vscode.DocumentSymbol[] | null {
+    for (const symbol of symbols) {
+        if (symbol.name === name) {
+            return [symbol];
+        }
+
+        if (symbol.children && symbol.children.length > 0) {
+            const childPath = findSymbolPathByName(symbol.children, name);
+            if (childPath) {
+                return [symbol, ...childPath];
             }
         }
     }
