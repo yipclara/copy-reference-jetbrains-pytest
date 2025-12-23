@@ -5,9 +5,9 @@
  * Provides JetBrains-style "Copy Reference" functionality that allows users to
  * right-click on any symbol and copy its full dot notation path (formatted for pytest) to the clipboard.
  *
- * Supports Python
+ * Supports Python only
  *
- * @author Clara
+ * @author Clara Yip
  * @version 1.0.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -35,8 +35,11 @@ async function handleCopyReference() {
     }
     const document = editor.document;
     const position = editor.selection.active;
-    // Check if this is a diff view or other special context
-    const isDiffView = document.uri.scheme === 'git' || document.uri.scheme === 'file' && document.uri.path.includes('.git');
+    // Only support Python for now
+    if (document.languageId !== 'python') {
+        vscode.window.showWarningMessage('Only Python is supported by this command');
+        return;
+    }
     try {
         const reference = await generateFullReference(document, position);
         if (reference) {
@@ -85,10 +88,10 @@ async function generateFullReference(document, position) {
     // Find the symbol hierarchy path
     const symbolPath = findSymbolHierarchy(symbols, position);
     if (symbolPath.length === 0) {
-        // Try to find any symbol that matches the word at cursor
-        const matchingSymbol = findSymbolByName(symbols, word);
-        if (matchingSymbol) {
-            return buildCompleteReference(document, [matchingSymbol]);
+        // Try to find any symbol path that matches the word at cursor (preserves parents like classes)
+        const matchingPath = findSymbolPathByName(symbols, word);
+        if (matchingPath) {
+            return buildCompleteReference(document, matchingPath);
         }
         // Final fallback: just the word with namespace
         return buildFallbackReference(document, word);
@@ -162,24 +165,41 @@ function findSymbolByName(symbols, name) {
     return null;
 }
 /**
+ * Finds the path (outermost → innermost) to the first symbol matching `name`.
+ * @param symbols - Array of document symbols
+ * @param name - The symbol name to find
+ * @returns Array of symbols from outermost to the matching symbol, or null
+ */
+function findSymbolPathByName(symbols, name) {
+    for (const symbol of symbols) {
+        if (symbol.name === name) {
+            return [symbol];
+        }
+        if (symbol.children && symbol.children.length > 0) {
+            const childPath = findSymbolPathByName(symbol.children, name);
+            if (childPath) {
+                return [symbol, ...childPath];
+            }
+        }
+    }
+    return null;
+}
+/**
  * Builds the complete reference string from document and symbol hierarchy
  * @param document - The text document
  * @param symbolPath - Array of symbols from outermost to innermost
  * @returns The complete reference string
  */
 function buildCompleteReference(document, symbolPath) {
-    const parts = [];
-    // Add namespace/module/package prefix based on file and language
     const namespacePrefix = extractNamespacePrefix(document);
+    const symbolNames = symbolPath.map(s => s.name);
+    // Build parts once (namespace + symbols)
+    const parts = [];
     if (namespacePrefix) {
         parts.push(namespacePrefix);
     }
-    // Add all symbols in the hierarchy
-    for (const symbol of symbolPath) {
-        parts.push(symbol.name);
-    }
-    // Join with appropriate separator for the language
-    const separator = getLanguageSeparator(document.languageId);
+    parts.push(...symbolNames);
+    const separator = '::';
     return parts.join(separator);
 }
 /**
@@ -188,24 +208,8 @@ function buildCompleteReference(document, symbolPath) {
  * @returns The namespace prefix or null if none found
  */
 function extractNamespacePrefix(document) {
-    const languageId = document.languageId;
-    const fileContent = document.getText();
     const fileName = getFileNameWithoutExtension(document.uri);
-    switch (languageId) {
-        case 'python':
-            return buildPythonModulePath(document, fileName);
-        case 'java':
-        case 'kotlin':
-        case 'scala':
-            return extractJvmPackage(fileContent, fileName);
-        case 'csharp':
-            return extractCSharpNamespace(fileContent, fileName);
-        case 'typescript':
-        case 'javascript':
-            return extractTypeScriptModule(fileContent, fileName);
-        default:
-            return fileName;
-    }
+    return buildPythonModulePath(document, fileName);
 }
 /**
  * Builds Python module path from file location
@@ -216,41 +220,15 @@ function extractNamespacePrefix(document) {
 function buildPythonModulePath(document, fileName) {
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
     if (workspaceFolder) {
-        const relativePath = vscode.workspace.asRelativePath(document.uri);
-        return relativePath
-            .replace(/\//g, '.')
-            .replace(/\.py$/, '');
+        let relativePath = vscode.workspace.asRelativePath(document.uri);
+        // If this is an __init__.py, use the package directory as the module path
+        relativePath = relativePath.replace(/\/?__init\.py$/, '');
+        if (relativePath === '') {
+            // Fallback to filename without extension if we removed everything
+            return fileName;
+        }
+        return relativePath;
     }
-    return fileName;
-}
-/**
- * Extracts package information from JVM language files
- * @param fileContent - The file content
- * @param fileName - The base file name
- * @returns The package.ClassName format
- */
-function extractJvmPackage(fileContent, fileName) {
-    const packageMatch = fileContent.match(/package\s+([\w.]+)/);
-    return packageMatch ? `${packageMatch[1]}.${fileName}` : fileName;
-}
-/**
- * Extracts namespace from C# files
- * @param fileContent - The file content
- * @param fileName - The base file name
- * @returns The namespace.ClassName format
- */
-function extractCSharpNamespace(fileContent, fileName) {
-    const namespaceMatch = fileContent.match(/namespace\s+([\w.]+)/);
-    return namespaceMatch ? `${namespaceMatch[1]}.${fileName}` : fileName;
-}
-/**
- * Extracts module information from TypeScript/JavaScript files
- * @param fileContent - The file content
- * @param fileName - The base file name
- * @returns The module name or file name
- */
-function extractTypeScriptModule(fileContent, fileName) {
-    // Could be enhanced to detect module declarations, but for now use filename
     return fileName;
 }
 /**
@@ -263,27 +241,6 @@ function getFileNameWithoutExtension(uri) {
     return fileName.replace(/\.[^/.]+$/, '');
 }
 /**
- * Returns the appropriate separator for the given language
- * @param languageId - The programming language identifier
- * @returns The separator string
- */
-function getLanguageSeparator(languageId) {
-    switch (languageId) {
-        case 'cpp':
-        case 'c':
-            return '::';
-        case 'python':
-        case 'java':
-        case 'kotlin':
-        case 'scala':
-        case 'csharp':
-        case 'typescript':
-        case 'javascript':
-        default:
-            return '.';
-    }
-}
-/**
  * Builds a simple fallback reference for diff views and special contexts
  * @param document - The text document
  * @param word - The word at cursor position
@@ -293,16 +250,8 @@ function buildSimpleFallbackReference(document, word) {
     if (!word || word.trim().length === 0) {
         return null;
     }
-    const languageId = document.languageId;
-    // For Python, build the full module path like the main logic
-    if (languageId === 'python') {
-        const pythonPath = buildPythonModulePath(document, getFileNameWithoutExtension(document.uri));
-        return `${pythonPath}.${word}`;
-    }
-    // For other languages, use basic fallback
-    const fileName = getFileNameWithoutExtension(document.uri);
-    const separator = getLanguageSeparator(languageId);
-    return `${fileName}${separator}${word}`;
+    const pythonPath = buildPythonModulePath(document, getFileNameWithoutExtension(document.uri));
+    return `${pythonPath}::${word}`;
 }
 /**
  * Builds a fallback reference when symbols aren't available
@@ -312,13 +261,8 @@ function buildSimpleFallbackReference(document, word) {
  */
 function buildFallbackReference(document, word) {
     const fileName = getFileNameWithoutExtension(document.uri);
-    const separator = getLanguageSeparator(document.languageId);
-    // Try to get some context from file path for Python
-    if (document.languageId === 'python') {
-        const pythonPath = buildPythonModulePath(document, fileName);
-        return `${pythonPath}.${word}`;
-    }
-    return `${fileName}${separator}${word}`;
+    const pythonPath = buildPythonModulePath(document, fileName);
+    return `${pythonPath}::${word}`;
 }
 /**
  * Deactivates the extension

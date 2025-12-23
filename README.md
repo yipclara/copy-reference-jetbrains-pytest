@@ -24,6 +24,8 @@ The easiest way to install:
 3. **Search for "Copy Reference - Pytest"** (published by Clara Yip)
 4. **Click Install**
 
+> **Note:** This extension requires a Python language extension (for example, **Pylance** or the Microsoft Python extension) to provide symbol information. Make sure the Python extension is installed and enabled in VS Code (and in the Extension Development Host when running in dev mode).
+
 [![Install from GitHub Releases](https://img.shields.io/badge/Download-VSIX-blue?style=for-the-badge&logo=github)](https://github.com/yipclara/copy-reference-jetbrains-pytest/releases)
 
 ### Option 2: Manual Installation from GitHub
@@ -44,6 +46,7 @@ For early access or offline installation:
 - Restart VS Code after installation
 - Check if the extension is enabled in the Extensions panel
 - Ensure you have a Python file open
+- Make sure a Python language extension (e.g., Pylance) is installed and active — the extension relies on the language provider for document symbols
 
 **Can't find "Copy Reference" in context menu?**
 - Make sure you're right-clicking on a Python symbol (class, method, function)
@@ -106,11 +109,11 @@ Found a bug or want to contribute?
 2. Open an issue or submit a pull request
 3. Help make this extension even better!
 
-## � Acknowledgements
+## 🙏 Acknowledgements
 
 This project is a pytest-focused fork inspired by and building upon the original "Copy Reference" extension by **Aaron Kazah**. Many thanks to Aaron for the idea and initial implementation — see the original project: https://github.com/aaronkazah/copy-reference-jetbrains
 
-## ���📄 License
+## 📄 License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
