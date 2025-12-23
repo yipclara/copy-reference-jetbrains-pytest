@@ -1,18 +1,17 @@
 # Copy Reference JetBrains for VS Code
 
-[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/aaronkazah.copy-reference-jetbrains)](https://marketplace.visualstudio.com/items?itemName=aaronkazah.copy-reference-jetbrains)
+[![GitHub Release](https://img.shields.io/github/v/release/yipclara/copy-reference-jetbrains-pytest?style=flat-square)](https://github.com/yipclara/copy-reference-jetbrains-pytest/releases)
 
-A professional VS Code extension that brings JetBrains-style "Copy Reference" functionality to Visual Studio Code. Right-click on any symbol (class, method, function, variable) to copy its full dot notation path to your clipboard.
+A VS Code extension that brings JetBrains-style "Copy Reference" functionality specifically for **Python (pytest)**. Right-click on any Python symbol (class, method, function) to copy its pytest-style reference (e.g., `module::Class::method`) to your clipboard.
 
 
 ## ✨ Features
 
-- **JetBrains-style copy reference**: Get the exact functionality you're used to from IntelliJ IDEA, PyCharm, WebStorm, etc.
-- **Multi-language support**: Works with Python, TypeScript, JavaScript, Java, C#, C++, and more
-- **Smart path detection**: Automatically detects modules, packages, namespaces, and file structures
-- **Django testing ready**: Perfect for generating test paths like `python manage.py test myapp.tests.test_models.TestClass.test_method`
-- **Context menu integration**: Right-click anywhere to access the feature
-- **Instant clipboard copy**: Automatically copies the full path to your system clipboard
+- **Pytest-style references**: Produces JetBrains-style test identifiers such as `tests.test_example::TestThing::test_it`.
+- **Python module/package detection**: Resolves package/module paths from your workspace layout (special-cases `__init__.py`).
+- **Test-friendly output**: Useful for running single tests with `pytest` using file node IDs (e.g., `pytest tests/test_example.py::TestThing::test_it`).
+- **Context menu integration**: Right-click on a Python symbol to copy its reference
+- **Instant clipboard copy**: Copies the reference to your system clipboard immediately.
 
 ## 🚀 Installation
 
@@ -22,16 +21,16 @@ The easiest way to install:
 
 1. **Open VS Code**
 2. **Go to Extensions** (Ctrl/Cmd + Shift + X)
-3. **Search for "Copy Reference JetBrains"** by Aaron Kazah
+3. **Search for "Copy Reference - Pytest"** (published by Clara Yip)
 4. **Click Install**
 
-[![Install from VS Code Marketplace](https://img.shields.io/badge/VS%20Code-Install%20Extension-blue?style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=aaronkazah.copy-reference-jetbrains)
+[![Install from GitHub Releases](https://img.shields.io/badge/Download-VSIX-blue?style=for-the-badge&logo=github)](https://github.com/yipclara/copy-reference-jetbrains-pytest/releases)
 
 ### Option 2: Manual Installation from GitHub
 
 For early access or offline installation:
 
-1. **Download the latest VSIX file** from our [GitHub Releases](https://github.com/aaronkazah/copy-reference-jetbrains/releases) or directly: [copy-reference-jetbrains-1.0.3.vsix](https://github.com/aaronkazah/copy-reference-jetbrains/raw/main/releases/copy-reference-jetbrains-1.0.3.vsix)
+1. **Download the latest VSIX file** from our [GitHub Releases](https://github.com/yipclara/copy-reference-jetbrains-pytest/releases)
 2. **Open VS Code**
 3. **Go to Extensions panel** (Ctrl/Cmd + Shift + X)
 4. **Click the "..." menu** in the Extensions panel
@@ -44,11 +43,10 @@ For early access or offline installation:
 **Extension not appearing?**
 - Restart VS Code after installation
 - Check if the extension is enabled in the Extensions panel
-- Ensure you have a supported file open (Python, TypeScript, etc.)
+- Ensure you have a Python file open
 
 **Can't find "Copy Reference" in context menu?**
-- Make sure you're right-clicking on a symbol (class, method, function, variable)
-- Ensure the file has a supported language (check status bar)
+- Make sure you're right-clicking on a Python symbol (class, method, function)
 - Try clicking directly on the symbol name, not whitespace
 
 ## 📖 Usage
@@ -85,66 +83,39 @@ class User:
     def get_full_name(self):
         pass
 ```
-**Copy Reference result**: `myproject.myapp.models.User.get_full_name`
+**Copy Reference result**: `myproject.myapp.models::User::get_full_name`
 
-### TypeScript
-```typescript
-// src/services/UserService.ts
-export class UserService {
-    public async getUser(): Promise<User> {}
-}
-```
-**Copy Reference result**: `UserService.getUser`
 
-### Java
-```java
-// com/example/service/UserService.java
-package com.example.service;
-public class UserService {
-    public User getUser() {}
-}
-```
-**Copy Reference result**: `com.example.service.UserService.getUser`
 
 ## 🔧 Supported Languages
 
-- **Python** - Full module path support
-- **TypeScript/JavaScript** - ES6 modules and classes
-- **Java** - Package and class hierarchy
-- **C#** - Namespace and class support
-- **C/C++** - Namespace and scope resolution
-- **And many more...**
+- **Python (pytest)** - Full module and test node support (module::Class::method)**
 
 ## 🎯 Use Cases
 
-- **Django Testing**: Generate precise test paths for `manage.py test`
+- **Django Testing**: Generate precise test paths for `pytest`
 - **Code Documentation**: Reference specific methods in documentation
 - **Code Reviews**: Provide exact paths when discussing code
 - **Debugging**: Quickly reference problematic methods
-- **API Documentation**: Generate accurate endpoint references
 
 ## 🤝 Contributing
 
 Found a bug or want to contribute? 
 
-1. Visit our [GitHub repository](https://github.com/aaronkazah/copy-reference-jetbrains)
+1. Visit our [GitHub repository](https://github.com/yipclara/copy-reference-jetbrains-pytest)
 2. Open an issue or submit a pull request
 3. Help make this extension even better!
 
-## 📄 License
+## � Acknowledgements
+
+This project is a pytest-focused fork inspired by and building upon the original "Copy Reference" extension by **Aaron Kazah**. Many thanks to Aaron for the idea and initial implementation — see the original project: https://github.com/aaronkazah/copy-reference-jetbrains
+
+## ���📄 License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
-## 👨‍💻 Author
-
-**Aaron Kazah** - [@aaronkazah](https://github.com/aaronkazah)
-
-*Former PyCharm enthusiast*
-
 ---
 
-⭐ **If this extension helps your workflow, please consider giving it a star on GitHub!**
+🐛 **Found an issue?** [Report it here](https://github.com/yipclara/copy-reference-jetbrains-pytest/issues)
 
-🐛 **Found an issue?** [Report it here](https://github.com/aaronkazah/copy-reference-jetbrains/issues)
-
-📧 **Questions?** [Start a discussion](https://github.com/aaronkazah/copy-reference-jetbrains/discussions)
+📧 **Questions?** [Start a discussion](https://github.com/yipclara/copy-reference-jetbrains-pytest/discussions)

@@ -1,56 +1,49 @@
 {
-  "name": "copy-reference-jetbrains",
-  "displayName": "Copy Reference JetBrains",
-  "description": "JetBrains-style copy reference functionality for VS Code. Right-click any symbol to copy its full dot notation path.",
-  "version": "1.0.3",
-  "publisher": "aaronkazah",
+  "name": "copy-reference-jetbrains-pytest",
+  "displayName": "Copy Reference Pytest",
+  "description": "JetBrains-style copy reference for Python (pytest) in VS Code. Right-click a Python symbol to copy its pytest-style reference (module::Class::method).",
+  "version": "1.0.0",
+  "publisher": "yipclara",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aaronkazah/copy-reference-jetbrains.git"
+    "url": "https://github.com/yipclara/copy-reference-jetbrains-pytest.git"
   },
   "engines": {
     "vscode": "^1.74.0"
   },
   "categories": [
-    "Other"
+    "Programming Languages",
+    "Testing"
   ],
   "keywords": [
     "copy",
     "reference",
-    "jetbrains",
-    "intellij",
+    "pytest",
     "pycharm",
-    "webstorm",
-    "navigation",
-    "path",
-    "symbol",
-    "django",
-    "fastapi",
-    "flask",
-    "asgi",
-    "wsgi",
-    "django-rest-framework",
-    "starlette",
+    "python",
     "testing",
-    "unittest",
-    "pytest"
+    "django",
+    "unittest"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:python",
+    "onCommand:copyReference.copyPath.pytest"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "copyReference.copyPath",
-        "title": "Copy Reference",
+        "command": "copyReference.copyPath.pytest",
+        "title": "Copy Reference - Pytest",
         "icon": "$(symbol-class)"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "copyReference.copyPath",
+          "command": "copyReference.copyPath.pytest",
           "group": "9_cutcopypaste@2",
-          "when": "editorTextFocus"
+          "when": "editorTextFocus && editorLangId == 'python'"
         }
       ]
     }
@@ -67,10 +60,10 @@
     "@types/vscode": "^1.74.0",
     "typescript": "^4.9.5"
   },
-  "author": "Aaron Kazah",
+  "author": "Clara Yip",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aaronkazah/copy-reference-jetbrains/issues"
+    "url": "https://github.com/yipclara/copy-reference-jetbrains-pytest/issues"
   },
-  "homepage": "https://github.com/aaronkazah/copy-reference-jetbrains#readme"
+  "homepage": "https://github.com/yipclara/copy-reference-jetbrains-pytest#readme"
 }

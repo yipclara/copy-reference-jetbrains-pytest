@@ -1,19 +1,14 @@
 "use strict";
 /**
- * Copy Reference Extension for VS Code
+ * Copy Pytest Reference Extension for VS Code
  *
  * Provides JetBrains-style "Copy Reference" functionality that allows users to
- * right-click on any symbol and copy its full dot notation path to the clipboard.
+ * right-click on any symbol and copy its full dot notation path (formatted for pytest) to the clipboard.
  *
- * Supports multiple programming languages including:
- * - TypeScript/JavaScript
- * - Python
- * - Java/Kotlin/Scala
- * - C#
- * - C/C++
+ * Supports Python
  *
- * @author Aaron Kazah
- * @version 1.0.3
+ * @author Clara
+ * @version 1.0.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
@@ -23,7 +18,7 @@ const vscode = require("vscode");
  * @param context - The extension context
  */
 function activate(context) {
-    const disposable = vscode.commands.registerCommand('copyReference.copyPath', async () => {
+    const disposable = vscode.commands.registerCommand('copyReference.copyPath.pytest', async () => {
         await handleCopyReference();
     });
     context.subscriptions.push(disposable);
