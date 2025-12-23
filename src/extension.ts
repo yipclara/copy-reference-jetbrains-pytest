@@ -233,9 +233,7 @@ function buildPythonModulePath(document: vscode.TextDocument, fileName: string):
             return fileName;
         }
 
-        return relativePath
-            .replace(/\//g, '.')
-            .replace(/\.py$/, '');
+        return relativePath;
     }
     return fileName;
 }
