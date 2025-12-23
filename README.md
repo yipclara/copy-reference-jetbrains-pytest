@@ -1,4 +1,4 @@
-# Copy Reference JetBrains for VS Code
+# Copy Reference Pytest for VS Code
 
 [![GitHub Release](https://img.shields.io/github/v/release/yipclara/copy-reference-jetbrains-pytest?style=flat-square)](https://github.com/yipclara/copy-reference-jetbrains-pytest/releases)
 
