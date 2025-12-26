@@ -70,11 +70,11 @@ class UserModelTest(TestCase):
         pass
 ```
 
-**Copied result**: `myapp.tests.test_models.UserModelTest.test_user_creation`
+**Copied result**: `myapp/tests/test_models.py::UserModelTest::test_user_creation`
 
 **Use in terminal**:
 ```bash
-python manage.py test myapp.tests.test_models.UserModelTest.test_user_creation
+python pytest myapp/tests/test_models.py::UserModelTest::test_user_creation
 ```
 
 ## 📋 Example Outputs
@@ -86,7 +86,7 @@ class User:
     def get_full_name(self):
         pass
 ```
-**Copy Reference result**: `myproject.myapp.models::User::get_full_name`
+**Copy Reference result**: `myproject.myapp.models.py::User::get_full_name`
 
 
 
@@ -96,7 +96,7 @@ class User:
 
 ## 🎯 Use Cases
 
-- **Django Testing**: Generate precise test paths for `pytest`
+- **Python Testing**: Generate precise test paths for `pytest`
 - **Code Documentation**: Reference specific methods in documentation
 - **Code Reviews**: Provide exact paths when discussing code
 - **Debugging**: Quickly reference problematic methods
