@@ -2,7 +2,7 @@
   "name": "copy-reference-jetbrains-pytest",
   "displayName": "Copy Reference Pytest",
   "description": "JetBrains-style copy reference for Python (pytest) in VS Code. Right-click a Python symbol to copy its pytest-style reference (module::Class::method).",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "yipclara",
   "repository": {
     "type": "git",
